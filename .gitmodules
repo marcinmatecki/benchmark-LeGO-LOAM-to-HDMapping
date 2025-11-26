@@ -1,6 +1,6 @@
 [submodule "src/LeGO-LOAM"]
 	path = src/LeGO-LOAM
-	url = https://github.com/RobustFieldAutonomyLab/LeGO-LOAM.git
+	url = https://github.com/MapsHD/LeGO-LOAM.git
 [submodule "src/lego-loam-to-hdmapping/src/3rdparty/LASzip"]
 	path = src/lego-loam-to-hdmapping/src/3rdparty/LASzip
 	url = https://github.com/LASzip/LASzip.git

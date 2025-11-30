@@ -1,5 +1,10 @@
 # LeGO-LOAM-converter
 
+
+## Example Dataset: 
+
+Download the dataset from [Bunker DVI Dataset](https://charleshamesse.github.io/bunker-dvi-dataset/)  
+
 ## Intended use 
 
 This small toolset allows to integrate SLAM solution provided by [LeGO-LOAM](https://github.com/RobustFieldAutonomyLab/LeGO-LOAM) with [HDMapping](https://github.com/MapsHD/HDMapping).
@@ -97,11 +102,6 @@ cd /test_ws/
 source ./devel/setup.sh # adjust to used shell
 rosrun lego-loam-to-hdmapping listener <recorded_bag> <output_dir>
 ```
-
-## Example:
-
-Download the dataset from [HELiPR](https://sites.google.com/view/heliprdataset/download)  
-Then, download **Roundabout2**.
 
 ## Record the bag file:
 

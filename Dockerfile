@@ -1,93 +1,47 @@
-FROM ubuntu:20.04
-
-SHELL ["/bin/bash", "-c"]
-
+ARG ROS_DISTRO=noetic
+FROM ros:${ROS_DISTRO}-ros-base
 ENV DEBIAN_FRONTEND=noninteractive
 
-<<<<<<< HEAD
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl gnupg2 lsb-release software-properties-common \
-    build-essential git cmake \
-    python3-pip \
-    libceres-dev libeigen3-dev \
-    libpcl-dev \
-    nlohmann-json3-dev \
-    tmux \
-    wget \
-    unzip \
-    libusb-1.0-0-dev \
-        libboost-all-dev \
-    libeigen3-dev \
-    libpcl-dev \
-    libtbb-dev \
-    libmetis-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key \
-    -o /usr/share/keyrings/ros-archive-keyring.gpg
-RUN echo "deb [signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros/ubuntu $(lsb_release -cs) main" \
-    > /etc/apt/sources.list.d/ros1.list
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ros-noetic-desktop-full \
-    python3-rosdep \
-    python3-catkin-tools \
-    ros-noetic-geometry-msgs \
-    ros-noetic-sensor-msgs \
-    ros-noetic-std-msgs \
-    ros-noetic-message-generation \
-    ros-noetic-message-runtime \
-    ros-noetic-catkin \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /opt
-
-RUN wget https://cmake.org/files/v3.20/cmake-3.20.5.tar.gz &&\
-    tar -zxvf cmake-3.20.5.tar.gz && \ 
-    cd cmake-3.20.5 && \
-    ./bootstrap && \
-    make && \ 
-    make install
-
-RUN wget -O /opt/gtsam.zip https://github.com/borglab/gtsam/archive/4.0.0-alpha2.zip && \
-    unzip gtsam.zip && \
-    cd gtsam-4.0.0-alpha2 && \
-    mkdir build && cd build && \
-    cmake .. && \
-    make install 
-
-RUN git clone https://github.com/Livox-SDK/Livox-SDK.git && \
-    cd Livox-SDK && \
-    rm -rf build && \
-    mkdir build && \
-    cd build && \
-    cmake .. && \
-    make -j$(nproc) && \
-    make install
-
-WORKDIR /ros_ws
-
-COPY ./src ./src
-
-RUN source /opt/ros/noetic/setup.bash && \
-    catkin_make 
-
-ARG UID=1000
-ARG GID=1000
-RUN groupadd -g $GID ros && \
-    useradd -m -u $UID -g $GID -s /bin/bash ros
-    
-RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc && \
-    echo "source /ros_ws/devel/setup.bash" >> ~/.bashrc
-
-CMD ["bash"]
-=======
 SHELL ["/bin/bash", "-lc"]
 
-RUN apt-get update && apt-get install -y software-properties-common && add-apt-repository -y ppa:borglab/gtsam-release-4.0 && apt-get update && apt-get install -y python3-colcon-common-extensions ros-${ROS_DISTRO}-pcl-ros git nlohmann-json3-dev libpcl-dev python3-pip ros-${ROS_DISTRO}-cv-bridge ros-${ROS_DISTRO}-image-transport ros-${ROS_DISTRO}-tf libgtsam-dev libgtsam-unstable-dev libopencv-dev
+RUN apt-get update && apt-get install -y software-properties-common && \
+    add-apt-repository -y ppa:borglab/gtsam-release-4.0 && \
+    apt-get update && apt-get install -y \
+    git \
+    build-essential \
+    cmake \
+    python3-pip \
+    nlohmann-json3-dev \
+    libpcl-dev \
+    libopencv-dev \
+    libgtsam-dev \
+    libgtsam-unstable-dev \
+    ros-${ROS_DISTRO}-pcl-ros \
+    ros-${ROS_DISTRO}-cv-bridge \
+    ros-${ROS_DISTRO}-image-transport \
+    ros-${ROS_DISTRO}-tf \
+    ros-${ROS_DISTRO}-rosbag
 RUN pip3 install rosbags
 RUN mkdir -p /test_ws/src
 COPY src/ /test_ws/src
+
+# Clone LeGO-LOAM if submodule is empty
+RUN if [ ! -f /test_ws/src/LeGO-LOAM/package.xml ]; then \
+      rm -rf /test_ws/src/LeGO-LOAM && \
+      git clone --depth 1 https://github.com/MapsHD/LeGO-LOAM.git /test_ws/src/LeGO-LOAM; \
+    fi
+
+# Clone LASzip for converter
+RUN if [ ! -f /test_ws/src/lego-loam-to-hdmapping/src/3rdparty/LASzip/CMakeLists.txt ]; then \
+      mkdir -p /test_ws/src/lego-loam-to-hdmapping/src/3rdparty && \
+      rm -rf /test_ws/src/lego-loam-to-hdmapping/src/3rdparty/LASzip && \
+      git clone --depth 1 https://github.com/LASzip/LASzip.git /test_ws/src/lego-loam-to-hdmapping/src/3rdparty/LASzip; \
+    fi
+
 RUN if [ ! -f /test_ws/src/livox_ros_driver/package.xml ]; then rm -rf /test_ws/src/livox_ros_driver && git clone https://github.com/Livox-SDK/livox_ros_driver.git /test_ws/src/livox_ros_driver; fi
-RUN cd /test_ws && source /opt/ros/${ROS_DISTRO}/setup.bash && rosdep update && rosdep install --from-paths src --ignore-src -r -y || true && source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build
->>>>>>> parent of 3f0da0b (prod+)
+RUN cd /test_ws && \
+    source /opt/ros/${ROS_DISTRO}/setup.bash && \
+    rosdep update && \
+    rosdep install --from-paths src --ignore-src -r -y || true && \
+    source /opt/ros/${ROS_DISTRO}/setup.bash && \
+    catkin_make

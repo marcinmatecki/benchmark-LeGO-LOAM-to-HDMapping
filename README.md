@@ -38,4 +38,7 @@ docker build -t lego-loam_noetic .
 cd ros_ws/src/benchmark-LeGO-LOAM-to-HDMapping
 chmod +x docker_session_run-ros1-lego-loam.sh 
 docker_session_run-ros1-lego-loam.sh <input_bag> <output_folder>
+
+# For usage instructions or options, you can run:
+docker_session_run-ros1-lego-loam.sh --help
 ```

@@ -3,7 +3,8 @@
 
 ## Example Dataset: 
 
-Download the dataset from [Bunker DVI Dataset](https://charleshamesse.github.io/bunker-dvi-dataset/)  
+Download the dataset from [Bunker DVI Dataset](https://cloud.cylab.be/s/7PgyjbM2CBcakN5).  
+ **Note:** Make sure to download the **`reg1`** dataset specifically. 
 
 ## Intended use 
 

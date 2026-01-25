@@ -71,7 +71,6 @@ COPY ./src ./src
 
 WORKDIR /ros_ws/src
 
-
 RUN PKG=/ros_ws/src/LeGO-LOAM/LeGO-LOAM && \
     sed -i 's|set(CMAKE_CXX_FLAGS.*-std=c++11.*)|set(CMAKE_CXX_STANDARD 14)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)|' $PKG/CMakeLists.txt
 
@@ -93,6 +92,23 @@ RUN PKG=/ros_ws/src/LeGO-LOAM/LeGO-LOAM && \
     grep -q "Eigen/Core" $PKG/include/utility.h || \
     (awk '/opencv2\/opencv.hpp/ { print; print "#include <eigen3/Eigen/Core>"; print "#include <eigen3/Eigen/Dense>"; print "#include <eigen3/Eigen/Geometry>"; next }1' \
         $PKG/include/utility.h > /tmp/utility.h && mv /tmp/utility.h $PKG/include/utility.h)
+
+RUN PKG=/ros_ws/src/LeGO-LOAM/LeGO-LOAM && \
+    sed -i 's|extern const string pointCloudTopic = "/velodyne_points";|extern const string pointCloudTopic = "/livox/pointcloud";|' $PKG/include/utility.h && \
+    sed -i 's|extern const string imuTopic = "/imu/data";|extern const string imuTopic = "/livox/imu";|' $PKG/include/utility.h && \
+    sed -i 's|extern const bool useCloudRing = true;|extern const bool useCloudRing = false;|' $PKG/include/utility.h
+
+RUN PKG=/ros_ws/src/LeGO-LOAM/LeGO-LOAM && \
+    sed -i 's|/camera_init|camera_init|g' $PKG/launch/run.launch
+
+RUN PKG=/ros_ws/src/LeGO-LOAM/LeGO-LOAM && \
+    sed -i 's|<param name="/use_sim_time" value="true" />|<param name="/use_sim_time" value="false" />|' $PKG/launch/run.launch
+
+RUN PKG=/ros_ws/src/LeGO-LOAM/LeGO-LOAM && \
+    sed -i 's|Fixed Frame: map|Fixed Frame: camera_init|g' $PKG/launch/test.rviz
+
+RUN PKG=/ros_ws/src/LeGO-LOAM/LeGO-LOAM && \
+    sed -i 's|/camera_init|camera_init|g' $PKG/src/*.cpp
 
 WORKDIR /ros_ws
 

@@ -22,7 +22,7 @@ sudo usermod -aG docker $USER
 ## Workspace
 
 ```shell
-mkdir ros_ws/src/
+mkdir -p ros_ws/src/
 cd ros_ws/src/
 git clone https://github.com/MapsHD/benchmark-LeGO-LOAM-to-HDMapping.git --recursive
 ```

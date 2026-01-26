@@ -24,11 +24,6 @@ sudo usermod -aG docker $USER
 
 For usage instructions, click [here](https://github.com/MapsHD/livox_bag_aggregate).
 
-```shell
-This tool converts Livox `/livox/lidar` (`livox_ros_driver/CustomMsg`) directly into
-`/livox/pointcloud` (`sensor_msgs/PointCloud2`).
-```
-
 ## Workspace
 
 ```shell

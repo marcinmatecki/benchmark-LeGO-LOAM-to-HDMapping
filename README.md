@@ -1,4 +1,4 @@
-# LeGO-LOAM-converter
+# [LeGO-LOAM](https://github.com/RobustFieldAutonomyLab/LeGO-LOAM) converter to [HDMapping](https://github.com/MapsHD/HDMapping)
 
 ## Hint
 

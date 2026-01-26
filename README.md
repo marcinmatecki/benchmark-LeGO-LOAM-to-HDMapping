@@ -19,6 +19,15 @@ sudo apt update
 sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 ```
+
+## Convert ros1 CustomMsg to PointCloud2
+```shell
+This tool converts Livox `/livox/lidar` (`livox_ros_driver/CustomMsg`) directly into
+`/livox/pointcloud` (`sensor_msgs/PointCloud2`).
+
+For usage instructions, click **[here](https://github.com/MapsHD/livox_bag_aggregate)**.
+```
+
 ## Workspace
 
 ```shell
